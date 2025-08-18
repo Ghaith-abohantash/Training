@@ -1,16 +1,17 @@
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Head from "next/head";
-import books from "../../data/books";
+import booksData from "../../data/books";
+import BookRating from "../../components/BookRating";
 
 export async function getStaticPaths() {
-  const paths = books.map(book => ({ params: { id: book.id } }));
+  const paths = booksData.map(book => ({ params: { id: book.id } }));
   return { paths, fallback: false };
 }
 
 export async function getStaticProps({ params }) {
-  const book = books.find(b => b.id === params.id);
-  return { props: { book }, revalidate: 60 };
+  const book = booksData.find(b => b.id === params.id);
+  return { props: { book } };
 }
 
 export default function BookPage({ book }) {
@@ -26,6 +27,7 @@ export default function BookPage({ book }) {
 
       <div className="container mx-auto p-6">
         <button onClick={() => router.back()} className="text-blue-500 mb-4">⬅ Back</button>
+
         <div className="flex flex-col md:flex-row gap-6">
           <Image src={book.image} alt={book.title} width={300} height={400} className="rounded" />
           <div>
@@ -33,6 +35,8 @@ export default function BookPage({ book }) {
             <p className="text-gray-600 mb-2">by {book.author}</p>
             <p className="mb-4">{book.description}</p>
             <p className="text-sm bg-gray-200 inline-block px-3 py-1 rounded">{book.category}</p>
+
+            <BookRating book={book} />
           </div>
         </div>
       </div>
